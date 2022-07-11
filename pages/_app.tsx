@@ -1,12 +1,15 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
+import UserProvider from "../components/Providers/UserProvider";
 import Layout from "../components/Layout";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     return (
-        <Layout>
-            <Component {...pageProps} />
-        </Layout>
+        <UserProvider>
+            <Layout>
+                <Component {...pageProps} />
+            </Layout>
+        </UserProvider>
     );
 }
 

@@ -1,127 +1,248 @@
 import Link from "next/link";
+import { v4 as uuidv4 } from "uuid";
+
+import { BiMenu } from "react-icons/bi";
+import { SiMaildotru, SiGithub } from "react-icons/si";
+import { AiOutlineUser } from "react-icons/ai";
+import { BiLogOut } from "react-icons/bi";
+
+import { useState, useEffect, useContext } from "react";
+import supabase from "../../lib/getSupabase";
+import { UserContext } from "../Providers/UserProvider";
+import Login from "../CTA/Login";
 
 export default function Navbar() {
+    const [menu, setMenu] = useState<boolean>(false);
+    const [profileMenu, setProfileMenu] = useState<boolean>(false);
+    const [user, setUser] = useContext(UserContext);
+    const [loginModal, setLoginModal] = useState<boolean>(false);
+
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+    };
+
+    // Move the effect to the app file.
+
+    useEffect(() => {
+        const getUser = () => {
+            const supabaseUser = supabase.auth.user();
+            setUser(supabaseUser);
+        };
+        window.addEventListener("hashchange", function () {
+            getUser();
+        });
+        getUser();
+    }, [user, setUser]);
+
+    const handleModal = () => {
+        setLoginModal(!loginModal);
+    };
+
+    const items = [
+        {
+            label: "Home",
+            href: "/",
+        },
+        {
+            label: "Getting Started",
+            href: "#getting-started",
+        },
+    ];
+    const social = [
+        {
+            label: "Email",
+            href: "mailto:hello@hectorsosa.me",
+        },
+        {
+            label: "GitHub",
+            href: "https://github.com/ekqt",
+        },
+    ];
+
+    const account = [
+        {
+            label: "Profile",
+            href: "/profile",
+        },
+        {
+            label: "Feedback Rooms",
+            href: "/feedback",
+        },
+    ];
+
     return (
-        <div className='navbar bg-base-100 mt-4 px-4 max-w-7xl mx-auto'>
-            <div className='flex-1'>
-                <div className='flex-none md:hidden'>
-                    <div className='navbar-start'>
-                        <div className='dropdown dropdown-hover'>
-                            <label
-                                tabIndex={0}
-                                className='btn btn-ghost btn-circle'
-                            >
-                                <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    className='h-5 w-5'
-                                    fill='none'
-                                    viewBox='0 0 24 24'
-                                    stroke='currentColor'
-                                >
-                                    <path
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        strokeWidth='2'
-                                        d='M4 6h16M4 12h16M4 18h7'
-                                    />
-                                </svg>
-                            </label>
-                            <ul
-                                tabIndex={0}
-                                className='menu dropdown-content mt-0 p-4 shadow bg-base-100 rounded-box w-52'
-                            >
-                                <li>
-                                    <Link href='/blog' passHref>
-                                        <a className='text-lg font-normal'>
-                                            Blog
-                                        </a>
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        href='https://github.com/ekqt/my-ts-journey'
-                                        passHref
+        <>
+            <nav
+                className='flex items-center relative max-w-screen-xl px-2 py-8 mx-auto'
+                aria-labelledby='primary-navigation'
+            >
+                <button
+                    className='md:hidden border border-transparent rounded p-1 text-gray-700 text-lg font-normal hover:text-gray-500 hover:border-gray-300'
+                    onClick={() => setMenu(!menu)}
+                    tabIndex={0}
+                    onBlur={() => {
+                        setTimeout(() => setMenu(false), 100);
+                    }}
+                >
+                    <BiMenu size={24} />
+                </button>
+                <nav
+                    className={`flex flex-col gap-1 absolute top-20 left-0 z-10 p-4 w-full origin-top-left bg-white rounded-lg shadow-lg ${
+                        menu ? "" : "hidden"
+                    }`}
+                    aria-labelledby='primary-dropdown-navigation'
+                >
+                    <div className='-my-2 divide-y divide-gray-100'>
+                        <div className='py-2'>
+                            <strong className='block p-2 text-sm font-medium text-gray-400 uppercase'>
+                                Navigation
+                            </strong>
+                            {items.map((i) => (
+                                <Link key={uuidv4()} href={i.href} passHref>
+                                    <a
+                                        aria-label={i.label}
+                                        className='block px-4 py-2 text-lg text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-700'
                                     >
-                                        <a
-                                            className='text-lg font-normal'
-                                            target='_blank'
-                                        >
-                                            GitHub
-                                            <svg
-                                                xmlns='http://www.w3.org/2000/svg'
-                                                className='h-6 w-6'
-                                                fill='none'
-                                                viewBox='0 0 24 24'
-                                                stroke='currentColor'
-                                                strokeWidth='2'
-                                            >
-                                                <path
-                                                    strokeLinecap='round'
-                                                    strokeLinejoin='round'
-                                                    d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
-                                                />
-                                            </svg>
-                                        </a>
-                                    </Link>
-                                </li>
-                            </ul>
+                                        {i.label}
+                                    </a>
+                                </Link>
+                            ))}
+                        </div>
+                        <div className='py-2'>
+                            <strong className='block p-2 text-sm font-medium text-gray-400 uppercase'>
+                                Social
+                            </strong>
+                            {social.map((i) => (
+                                <Link key={uuidv4()} href={i.href} passHref>
+                                    <a
+                                        target='_blank'
+                                        aria-label={i.label}
+                                        className='flex gap-3 px-4 py-2 text-lg  text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-700'
+                                    >
+                                        {i.label === "Email" && (
+                                            <SiMaildotru size={26} />
+                                        )}
+                                        {i.label === "GitHub" && (
+                                            <SiGithub size={26} />
+                                        )}
+                                        {i.label}
+                                    </a>
+                                </Link>
+                            ))}
                         </div>
                     </div>
-                </div>
-                <Link href='/' passHref>
-                    <a
-                        className='btn btn-ghost normal-case text-xl'
-                    >
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            className='h-6 w-6'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            stroke='currentColor'
-                            strokeWidth='2'
-                        >
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253'
-                            />
-                        </svg>
-                    </a>
-                </Link>
-            </div>
-            <div className='flex-none'>
-                <ul className='hidden md:flex menu menu-horizontal p-0'>
-                    <li>
-                        <Link href='/blog' passHref>
-                            <a>Blog</a>
-                        </Link>
-                    </li>
-                    <li>
-                        <Link
-                            href='https://github.com/ekqt/my-ts-journey'
-                            passHref
-                        >
-                            <a target='_blank'>
-                                GitHub
-                                <svg
-                                    xmlns='http://www.w3.org/2000/svg'
-                                    className='h-6 w-6'
-                                    fill='none'
-                                    viewBox='0 0 24 24'
-                                    stroke='currentColor'
-                                    strokeWidth='2'
-                                >
-                                    <path
-                                        strokeLinecap='round'
-                                        strokeLinejoin='round'
-                                        d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'
-                                    />
-                                </svg>
+                </nav>
+                <h1 className='p-2 text-xl cursor-default font-bold text-transparent bg-gradient-to-r bg-clip-text from-red-500 to-orange-400'>
+                    Simple Feedback
+                </h1>
+
+                <nav
+                    className='hidden md:flex gap-6 mx-8'
+                    aria-labelledby='menu-navigation'
+                >
+                    {items.map((i) => (
+                        <Link key={uuidv4()} href={i.href} passHref>
+                            <a
+                                aria-label={i.label}
+                                className='text-gray-500 text-lg hover:text-gray-600'
+                            >
+                                {i.label}
                             </a>
                         </Link>
-                    </li>
-                </ul>
-            </div>
-        </div>
+                    ))}
+                </nav>
+
+                <nav
+                    className='ml-auto flex items-center gap-4 px-2'
+                    aria-labelledby='secondary-navigation'
+                >
+                    {social.map((i) => (
+                        <Link key={uuidv4()} href={i.href} passHref>
+                            <a
+                                target='_blank'
+                                aria-label={i.label}
+                                className='hidden md:block text-gray-700 text-lg border-2 border-transparent hover:text-gray-500'
+                            >
+                                {i.label === "Email" && (
+                                    <SiMaildotru size={26} />
+                                )}
+                                {i.label === "GitHub" && <SiGithub size={26} />}
+                            </a>
+                        </Link>
+                    ))}
+                    {!user ? (
+                        <button
+                            className='text-center px-5 py-2 text-lg text-gray-800 border rounded border-red-600 hover:border-red-900 focus:outline-none focus:ring'
+                            onClick={() => {
+                                setLoginModal(true);
+                            }}
+                        >
+                            Login
+                        </button>
+                    ) : (
+                        <div className='relative'>
+                            <button
+                                className='border border-gray-700 rounded-full p-1 text-gray-700 text-lg font-normal hover:text-gray-500 hover:border-gray-500'
+                                onClick={() => setProfileMenu(!profileMenu)}
+                                tabIndex={0}
+                                onBlur={() =>
+                                    setTimeout(() => setProfileMenu(false), 100)
+                                }
+                            >
+                                <AiOutlineUser size={18} />
+                            </button>
+                            <div
+                                className={`absolute right-0 z-10 w-56 mt-3 origin-top-right bg-white border border-gray-100 rounded-md shadow-lg ${
+                                    profileMenu ? "" : "hidden"
+                                }`}
+                            >
+                                <div className='flow-root py-2'>
+                                    <div className='-my-2 divide-y divide-gray-100'>
+                                        <div className='p-2'>
+                                            <strong className='block pt-2 px-2 text-sm font-medium text-gray-400 uppercase'>
+                                                Account
+                                            </strong>
+                                            <span className='block px-2 mb-2 text-xs font-normal text-gray-400'>
+                                                {user.email}
+                                            </span>
+
+                                            {account.map((i) => (
+                                                <Link
+                                                    key={uuidv4()}
+                                                    href={i.href}
+                                                    passHref
+                                                >
+                                                    <a
+                                                        aria-label={i.label}
+                                                        className='block px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700'
+                                                    >
+                                                        {i.label}
+                                                    </a>
+                                                </Link>
+                                            ))}
+                                        </div>
+
+                                        <div className='p-2'>
+                                            <strong className='block p-2 text-sm font-medium text-gray-400 uppercase'>
+                                                Session
+                                            </strong>
+                                            <button
+                                                className='flex items-center w-full gap-2 px-4 py-2 text-red-700 rounded-lg hover:bg-red-50'
+                                                onClick={() => signOut()}
+                                            >
+                                                <BiLogOut size={22} />
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </nav>
+            </nav>
+            {loginModal && <Login handleModal={handleModal} />}
+        </>
     );
 }

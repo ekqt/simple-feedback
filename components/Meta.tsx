@@ -30,7 +30,7 @@ const Meta = ({
             <meta name='title' content={title} />
             <meta name='description' content={description} />
             <meta name='keywords' content={keywords} />
-            <link rel='icon' href='/favicon.svg' />
+            <link rel='icon' href='/favicon.ico' />
 
             {/* Open Graph - Facebook */}
             <meta property='og:type' content='website' />
@@ -50,10 +50,10 @@ const Meta = ({
 };
 
 Meta.defaultProps = {
-    title: "My TypeScript Journey",
+    title: "Simple Feedback",
     keywords: "Next.js, React, TypeScript, Tailwind CSS, MDX",
-    description: "TypeScript all things, this project is intended to be an independent blog to keep track of my TS journey.",
-    baseUrl: "https://my-ts-journey.vercel.app",
+    description: "Life is already too complicated, feedback should be simple.",
+    baseUrl: "https://simple-feedback.vercel.app",
     path: "/",
     image: "/home.png",
 };
