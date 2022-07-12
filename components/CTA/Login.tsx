@@ -1,17 +1,24 @@
 import supabase from "../../lib/getSupabase";
 import { BsXCircle, BsArrowRight } from "react-icons/bs";
 
+import { z } from "zod";
+import { MdAlternateEmail } from "react-icons/md";
+import { CgSpinner } from "react-icons/cg";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+
 import { useState } from "react";
 
 export default function Login({ handleModal }: { handleModal: VoidFunction }) {
     const [email, setEmail] = useState<string>("");
     const [sent, setSent] = useState<boolean>(false);
 
-    // Incorporate a library like ZOD to validate email before calling Supabase Auth.
-
     const auth = async () => {
         await supabase.auth.signIn({ email });
         setSent(true);
+    };
+
+    const isEmailValid = (email: string): boolean => {
+        return z.string().email().safeParse(email).success;
     };
 
     return (
@@ -46,14 +53,13 @@ export default function Login({ handleModal }: { handleModal: VoidFunction }) {
                         </div>
                         {!sent && (
                             <>
-                                <div className='my-2'>
+                                <div className='relative my-2'>
                                     <label className='sr-only' htmlFor='email'>
-                                        {" "}
-                                        Email{" "}
+                                        Email
                                     </label>
 
                                     <input
-                                        className='w-full py-3 px-3 border-2 border-gray-200 rounded'
+                                        className='w-full py-3 pl-3 pr-12 border-2 border-gray-200 rounded'
                                         id='email'
                                         type='email'
                                         placeholder='Email'
@@ -62,6 +68,27 @@ export default function Login({ handleModal }: { handleModal: VoidFunction }) {
                                             setEmail(e.target.value)
                                         }
                                     />
+                                    <span className='absolute -translate-y-1/2 pointer-events-none top-1/2 right-4'>
+                                        {!email.length && (
+                                            <MdAlternateEmail
+                                                size={24}
+                                                className='text-gray-300'
+                                            />
+                                        )}
+                                        {email.length > 0 &&
+                                            !isEmailValid(email) && (
+                                                <CgSpinner
+                                                    size={24}
+                                                    className='text-orange-400 animate-spin'
+                                                />
+                                            )}
+                                        {isEmailValid(email) && (
+                                            <AiOutlineCheckCircle
+                                                size={24}
+                                                className='text-green-500 opacity-80'
+                                            />
+                                        )}
+                                    </span>
                                 </div>
                                 <div className='flex flex-col sm:flex-row mt-2 gap-2'>
                                     <button
@@ -76,12 +103,22 @@ export default function Login({ handleModal }: { handleModal: VoidFunction }) {
                                     </button>
 
                                     <button
-                                        className='group flex gap-2 items-center justify-center w-full text-center px-8 py-2 sm:py-3 text-lg text-gray-800 border rounded border-transparent hover:border-red-900 focus:outline-none focus:ring'
+                                        className={`group flex gap-2 items-center justify-center w-full text-center px-8 py-2 sm:py-3 text-lg text-gray-800 border rounded border-transparent
+                                            ${
+                                                isEmailValid(email)
+                                                    ? "hover:border-red-900 focus:outline-none focus:ring"
+                                                    : "disabled:text-gray-400 disabled:cursor-not-allowed disabled:bg-gray-100"
+                                            }`}
                                         onClick={auth}
+                                        disabled={!isEmailValid(email)}
                                     >
                                         Login
                                         <BsArrowRight
-                                            className='text-red-600 group-hover:text-red-900'
+                                            className={
+                                                isEmailValid(email)
+                                                    ? "text-red-600 group-hover:text-red-900"
+                                                    : "text-gray-400"
+                                            }
                                             size={20}
                                         />
                                     </button>

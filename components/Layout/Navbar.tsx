@@ -22,8 +22,6 @@ export default function Navbar() {
         setUser(null);
     };
 
-    // Move the effect to the app file.
-
     useEffect(() => {
         const getUser = () => {
             const supabaseUser = supabase.auth.user();

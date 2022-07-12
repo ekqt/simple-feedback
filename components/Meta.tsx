@@ -30,7 +30,7 @@ const Meta = ({
             <meta name='title' content={title} />
             <meta name='description' content={description} />
             <meta name='keywords' content={keywords} />
-            <link rel='icon' href='/favicon.ico' />
+            <link rel='icon' href='/favicon.svg' />
 
             {/* Open Graph - Facebook */}
             <meta property='og:type' content='website' />
