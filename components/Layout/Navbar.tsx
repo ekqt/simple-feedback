@@ -78,10 +78,6 @@ export default function Navbar() {
                 <button
                     className='md:hidden border border-transparent rounded p-1 text-gray-700 text-lg font-normal hover:text-gray-500 hover:border-gray-300'
                     onClick={() => setMenu(!menu)}
-                    tabIndex={0}
-                    onBlur={() => {
-                        setTimeout(() => setMenu(false), 100);
-                    }}
                 >
                     <BiMenu size={24} />
                 </button>
@@ -101,6 +97,7 @@ export default function Navbar() {
                                     <a
                                         aria-label={i.label}
                                         className='block px-4 py-2 text-lg text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-700'
+                                        onClick={() => setMenu(false)}
                                     >
                                         {i.label}
                                     </a>
@@ -117,6 +114,7 @@ export default function Navbar() {
                                         target='_blank'
                                         aria-label={i.label}
                                         className='flex gap-3 px-4 py-2 text-lg  text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-700'
+                                        onClick={() => setMenu(false)}
                                     >
                                         {i.label === "Email" && (
                                             <SiMaildotru size={26} />
@@ -214,6 +212,11 @@ export default function Navbar() {
                                                     <a
                                                         aria-label={i.label}
                                                         className='block px-4 py-2 text-gray-500 rounded-lg hover:bg-gray-50 hover:text-gray-700'
+                                                        onClick={() =>
+                                                            setProfileMenu(
+                                                                false
+                                                            )
+                                                        }
                                                     >
                                                         {i.label}
                                                     </a>
@@ -227,7 +230,10 @@ export default function Navbar() {
                                             </strong>
                                             <button
                                                 className='flex items-center w-full gap-2 px-4 py-2 text-red-700 rounded-lg hover:bg-red-50'
-                                                onClick={() => signOut()}
+                                                onClick={() => {
+                                                    signOut();
+                                                    setProfileMenu(false);
+                                                }}
                                             >
                                                 <BiLogOut size={22} />
                                                 Logout
