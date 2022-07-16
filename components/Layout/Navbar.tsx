@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { v4 as uuidv4 } from "uuid";
 
 import { BiMenu } from "react-icons/bi";
@@ -10,12 +11,19 @@ import { useState, useEffect, useContext } from "react";
 import supabase from "../../lib/getSupabase";
 import { UserContext } from "../Providers/UserProvider";
 import Login from "../CTA/Login";
+import Welcome from "../CTA/Welcome";
 
 export default function Navbar() {
     const [menu, setMenu] = useState<boolean>(false);
     const [profileMenu, setProfileMenu] = useState<boolean>(false);
     const [user, setUser] = useContext(UserContext);
     const [loginModal, setLoginModal] = useState<boolean>(false);
+    const [welcomeModal, setWelcomeModal] = useState<boolean>(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        router.query.loginredirect && setWelcomeModal(true);
+    }, [router]);
 
     const signOut = async () => {
         await supabase.auth.signOut();
@@ -33,8 +41,13 @@ export default function Navbar() {
         getUser();
     }, [user, setUser]);
 
-    const handleModal = () => {
+    const handleLoginModal = () => {
         setLoginModal(!loginModal);
+    };
+
+    const handleWelcomeModal = () => {
+        setWelcomeModal!(!welcomeModal);
+        router.replace({ query: {} });
     };
 
     const items = [
@@ -246,7 +259,8 @@ export default function Navbar() {
                     )}
                 </nav>
             </nav>
-            {loginModal && <Login handleModal={handleModal} />}
+            {loginModal && <Login handleModal={handleLoginModal} />}
+            {welcomeModal && <Welcome handleModal={handleWelcomeModal} />}
         </>
     );
 }

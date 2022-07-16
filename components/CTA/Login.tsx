@@ -13,7 +13,10 @@ export default function Login({ handleModal }: { handleModal: VoidFunction }) {
     const [sent, setSent] = useState<boolean>(false);
 
     const auth = async () => {
-        await supabase.auth.signIn({ email });
+        await supabase.auth.signIn(
+            { email },
+            { redirectTo: "http://localhost:3000/?loginredirect=true" }
+        );
         setSent(true);
     };
 
@@ -46,7 +49,7 @@ export default function Login({ handleModal }: { handleModal: VoidFunction }) {
                                 ) : (
                                     <span>
                                         Check your email <b>{email}</b> and
-                                        login using our passwordless link
+                                        login using our passwordless link. <br/> Might want to check the Spam folder 👀 just in case!
                                     </span>
                                 )}
                             </p>
