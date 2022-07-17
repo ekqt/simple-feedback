@@ -15,8 +15,8 @@ export default function Login({ handleModal }: { handleModal: VoidFunction }) {
     const auth = async () => {
         await supabase.auth.signIn(
             { email },
-            { redirectTo: "http://localhost:3000/?loginredirect=true" }
-            // { redirectTo: "http://simple-feedback.vercel.app/?loginredirect=true" }
+            // { redirectTo: "http://localhost:3000/?loginredirect=true" }
+            { redirectTo: "http://simple-feedback.vercel.app/?loginredirect=true" }
         );
         setSent(true);
     };
