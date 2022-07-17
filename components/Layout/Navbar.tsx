@@ -241,16 +241,18 @@ export default function Navbar() {
                                             <strong className='block p-2 text-sm font-medium text-gray-400 uppercase'>
                                                 Session
                                             </strong>
-                                            <button
-                                                className='flex items-center w-full gap-2 px-4 py-2 text-red-700 rounded-lg hover:bg-red-50'
-                                                onClick={() => {
-                                                    signOut();
-                                                    setProfileMenu(false);
-                                                }}
-                                            >
-                                                <BiLogOut size={22} />
-                                                Logout
-                                            </button>
+                                            <Link href="/" passHref>
+                                                <a
+                                                    className='flex items-center w-full gap-2 px-4 py-2 text-red-700 rounded-lg hover:bg-red-50'
+                                                    onClick={() => {
+                                                        signOut();
+                                                        setProfileMenu(false);
+                                                    }}
+                                                >
+                                                    <BiLogOut size={22} />
+                                                    Logout
+                                                </a>
+                                            </Link>
                                         </div>
                                     </div>
                                 </div>

@@ -72,7 +72,6 @@ const Profile: NextPage = () => {
                             type='email'
                             id='email'
                             className='w-full mt-2 p-4 text-lg border border-gray-200 rounded-lg shadow-sm cursor-not-allowed'
-                            placeholder='Please write your preferred name'
                             value={userEmail}
                             disabled
                         />
